@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DownloadManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,40 +23,63 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static String IPPORT = "192.168.0.21:5000";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
 
-    private void writeStream(OutputStream out){
-        String output = "Hello world";
+    public void HideSystemUI() {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        HideSystemUI();
+    }
+
+    public static void ClickKey(String key) {
         try {
-            out.write(output.getBytes());
-            out.flush();
-        } catch (Exception e) {
-            //Log.d(e.getMessage());
+            Runtime.getRuntime().exec(String.format("curl --data key=%s http://%s/test", key, IPPORT));
+        }
+        catch (IOException e) {
+
         }
     }
 
-    public void SendRequest(View view) {
-        String IPPORT = "192.168.43.216:5000";
+    public void ClickRight(View view) {
+        ClickKey("right");
+    }
 
-        HttpURLConnection urlConnection = null;
-        try {
-            URL url = new URL("http://"+IPPORT+"/test");
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setDoOutput(true);
-            urlConnection.setChunkedStreamingMode(0);
+    public void ClickLeft(View view) {
+        ClickKey("left");
+    }
 
-            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            writeStream(out);
-        } catch (Exception e) {
-            //Log.d(e.getMessage());
-        }
-        finally {
-            urlConnection.disconnect();
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    ClickKey("right");
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    ClickKey("left");
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
         }
     }
 }

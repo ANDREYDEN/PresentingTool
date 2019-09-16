@@ -8,7 +8,7 @@ def index():
 
 @app.route('/test', methods=['POST'])
 def test():
-    pressKey(request.form['key'], 1)
+    pressKey(request.form['key'])
     return 'Bye'
 
 if __name__ == '__main__':
