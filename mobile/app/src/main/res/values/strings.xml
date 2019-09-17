@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">PostRequest</string>
+    <string name="app_name">Presenting Tool</string>
+    <string name="editText">Edit Text</string>
 </resources>

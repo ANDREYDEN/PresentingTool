@@ -1,4 +1,6 @@
 from keypress import pressKey
+
+import socket
 from flask import Flask, request
 app = Flask(__name__)
 
@@ -12,4 +14,5 @@ def test():
     return 'Bye'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', threaded=True, debug=True)
+    print("Your IP: " + socket.gethostbyname(socket.gethostname()))
+    app.run(host='0.0.0.0', threaded=True)

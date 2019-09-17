@@ -2,32 +2,22 @@ package com.example.postrequest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.DownloadManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.TextView;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    public static String IPPORT = "192.168.0.21:5000";
+    private String ip;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        ip = intent.getStringExtra(EnterIPActivity.EXTRA_MESSAGE);
     }
 
     public void HideSystemUI() {
@@ -46,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
         HideSystemUI();
     }
 
-    public static void ClickKey(String key) {
+    public void ClickKey(String key) {
         try {
-            Runtime.getRuntime().exec(String.format("curl --data key=%s http://%s/test", key, IPPORT));
+            Runtime.getRuntime().exec(String.format("curl --data key=%s http://%s:5000/test", key, ip));
         }
         catch (IOException e) {
 
